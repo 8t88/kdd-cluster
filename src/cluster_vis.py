@@ -4,18 +4,6 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 
-
-def run_pca(vector_features, k=3):
-    from pyspark.ml.feature import PCA
-
-    feature_vec = vector_features.select('features')
-    pca = PCA(k, inputCol="features", outputCol="pcaFeatures")
-    model = pca.fit(feature_vec)
-
-    result = model.transform(feature_vec).select("pcaFeatures")
-    return result
-
-
 def plot_3d():
     import numpy as np
     import matplotlib.pyplot as plt
@@ -39,7 +27,27 @@ def plot_3d():
     plt.show()
 
 
-def barplot():
+def barplot(kmeans_labels):
+    label_prediction_agg_pd = kmeans_labels.groupBy("index_label", "prediction").count().sort("count").toPandas()
+
+    label_agg_pd = kmeans_labels.groupBy("index_label").count().sort("count").toPandas()
+    prediction_agg_pd = kmeans_labels.groupBy("prediction").count().sort("count").toPandas()
+
+    y_pos = np.arange(len(label_agg_pd['index_label']))
+
+    plt.subplot(2,1,1)
+    plt.bar(y_pos, label_agg_pd['count'], align='center', alpha=0.5)
+    plt.xticks(y_pos, label_agg_pd['index_label'])
+    plt.title('Count of Labels')
+
+    plt.subplot(2,1,2)
+    plt.bar(y_pos, prediction_agg_pd['count'], align='center', alpha=0.5)
+    plt.xticks(y_pos, prediction_agg_pd['prediction'])
+    plt.title('Count of Cluster Predictions')
+    plt.show()
+
+
+def scatterplots():
 
 
 
