@@ -52,3 +52,11 @@ def scatterplots():
 
 
 
+
+
+def stackedBar(predictionsDF):
+    import pandas as pd
+    label_prediction_agg = predictionsDF.groupBy('label', 'index_label').count()
+    label_prediction_agg_pd = label_prediction_agg.toPandas()
+
+

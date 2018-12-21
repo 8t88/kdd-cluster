@@ -1,6 +1,7 @@
 from pyspark.ml.clustering import KMeans
 import prep_data
 
+#maybe turn into class, with model as object
 def kmeans_build(dataset, seed=1024,num_steps=21,batch_size=50,num_features=12):
 
     vector_features = prep_data.vectorize_features(dataset)
@@ -11,19 +12,20 @@ def kmeans_build(dataset, seed=1024,num_steps=21,batch_size=50,num_features=12):
 
     return kmeansmodel
 
-def sse_centers(model):
+def sse_centers(model, print_centers = True):
     sse = model.computeCost(vector_features)
     print("Sum of Squared Errors = " + str(sse))
 
     centers = model.clusterCenters()
-    print ("Cluster Centers: ")
-    for center in centers:
-        print(center)
+    if(print_centers):
+        print ("Cluster Centers: ")
+        for center in centers:
+            print(center)
 
 def datalabels(model):
     kmeans_labels = kmeansmodel.transform(vector_features)
     
-    print(kmeans_labels.columns)
+    #print(kmeans_labels.columns)
     kmeans_labels.collect()
     return kmeans_labels
 
